@@ -4,10 +4,11 @@ from .models import Task
 from .forms import TaskForm
 from django.contrib import messages 
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 def helloworld(request):
     return HttpResponse('Hello World!')
-
+@login_required
 def taskList(request):
     search = request.GET.get('search')
 
@@ -21,11 +22,12 @@ def taskList(request):
         
 
     return render(request, 'list.html', {'tasks': tasks})    
-
+@login_required
 def taskView(request, id):
     task = get_object_or_404(Task, pk=id)
     return render(request, 'task.html', {'task': task})
 
+@login_required
 def newTask(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
@@ -40,9 +42,11 @@ def newTask(request):
         form = TaskForm()
         return render(request, 'addtask.html', {'form': form})
     
+@login_required    
 def yourName(request, name):
     return render(request, 'yourname.html', {'name': name})
 
+@login_required
 def editTask(request, id):
     task = get_object_or_404(Task, pk=id)
     form = TaskForm(instance=task)
@@ -58,6 +62,7 @@ def editTask(request, id):
     else:
         return render(request, 'edittask.html', {'form': form, 'task': task})
     
+@login_required    
 def deleteTask(request, id):
     task = get_object_or_404(Task, pk=id)
     task.delete()
